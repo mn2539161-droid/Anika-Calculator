@@ -3,125 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anika Ebnat Sadia Calculator</title>
+    <title>Anika Ebnat Sadia - Magic Sound Calculator</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; transition: background 1.5s, opacity 1.5s; }
+
         body {
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            min-height: 100vh; overflow: hidden; background: #87CEEB;
         }
 
-        /* ক্যালকুলেটর বডি ডিজাইন */
+        body.night { background: #0b1a2f; }
+
+        /* আকাশ ও পরিবেশ */
+        .moon {
+            position: absolute; top: -100px; right: 50px;
+            width: 70px; height: 70px; background: #f4f4f4;
+            border-radius: 50%; box-shadow: 0 0 20px #fff;
+            opacity: 0; transition: 2s; z-index: 1;
+        }
+        body.night .moon { top: 40px; opacity: 1; }
+
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; z-index: 0; }
+        body.night .star { opacity: 0.8; animation: twinkle 2s infinite; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        .comet { position: absolute; width: 120px; height: 2px; background: linear-gradient(to right, white, transparent); opacity: 0; z-index: 1; }
+        @keyframes shoot {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateX(-600px) translateY(600px) rotate(-45deg); opacity: 0; }
+        }
+
+        .snowflake { position: absolute; top: -10px; color: white; pointer-events: none; z-index: 5; }
+        @keyframes fall { to { transform: translateY(105vh); } }
+
+        /* ক্যালকুলেটর */
         .calculator {
-            width: 320px; padding: 20px; border-radius: 30px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.1);
-            border: 1px solid rgba(255,255,255,0.5);
-            animation: fadeIn 1.5s ease-in-out;
+            width: 320px; padding: 25px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.4);
+            z-index: 10; text-align: center;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .title { color: #fff; font-size: 20px; margin-bottom: 15px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
 
-        .title {
-            text-align: center; color: #fff; font-size: 18px;
-            margin-bottom: 15px; font-weight: 600; text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-        }
-
-        /* ডিসপ্লে স্ক্রিন */
         #display {
-            width: 100%; height: 60px; font-size: 30px; text-align: right;
-            margin-bottom: 20px; padding: 10px; border: none; border-radius: 10px;
-            background: rgba(255, 255, 255, 0.3); color: #333; outline: none;
+            width: 100%; height: 65px; font-size: 32px; text-align: right;
+            margin-bottom: 20px; padding: 15px; border: none; border-radius: 15px;
+            background: rgba(255, 255, 255, 0.85); color: #000; outline: none;
         }
 
-        /* বাটন গ্রিড */
-        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 
         button {
             height: 60px; border-radius: 15px; border: none;
-            font-size: 20px; font-weight: bold; cursor: pointer;
-            background: rgba(255, 255, 255, 0.5); color: #444;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px rgba(0,0,0,0.1);
+            font-size: 22px; font-weight: bold; cursor: pointer;
+            background: rgba(255, 255, 255, 0.7); color: #333;
+            transition: 0.1s; box-shadow: 0 4px 0 #bbb;
         }
 
-        /* বাটন এনিমেশন */
-        button:hover {
-            background: rgba(255, 255, 255, 0.8);
-            transform: scale(1.05);
-            color: #ff6b6b;
-        }
+        button:hover { background: #fff; transform: translateY(-2px); color: #ff6b6b; }
+        button:active { transform: translateY(2px); box-shadow: none; }
 
-        button:active {
-            transform: scale(0.95);
-            box-shadow: 0 2px rgba(0,0,0,0.1);
-        }
-
-        .operator { background: rgba(255, 107, 107, 0.6); color: white; }
-        .equal { background: #4ee44e; color: white; grid-column: span 2; }
-        .clear { background: #ff4d4d; color: white; grid-column: span 2; }
-
+        .operator { background: #ffb8b8; color: #d63031; }
+        .equal { background: #55efc4; color: #00b894; grid-column: span 2; }
+        .clear { background: #fab1a0; color: #e17055; grid-column: span 2; }
     </style>
 </head>
 <body>
 
-<div class="calculator">
-    <div class="title">Anika Ebnat Sadia</div>
-    <input type="text" id="display" disabled>
-    <div class="buttons">
-        <button class="clear" onclick="clearDisplay()">AC</button>
-        <button class="operator" onclick="deleteLast()">DEL</button>
-        <button class="operator" onclick="addToDisplay('/')">/</button>
-        
-        <button onclick="addToDisplay('7')">7</button>
-        <button onclick="addToDisplay('8')">8</button>
-        <button onclick="addToDisplay('9')">9</button>
-        <button class="operator" onclick="addToDisplay('*')">×</button>
-        
-        <button onclick="addToDisplay('4')">4</button>
-        <button onclick="addToDisplay('5')">5</button>
-        <button onclick="addToDisplay('6')">6</button>
-        <button class="operator" onclick="addToDisplay('-')">-</button>
-        
-        <button onclick="addToDisplay('1')">1</button>
-        <button onclick="addToDisplay('2')">2</button>
-        <button onclick="addToDisplay('3')">3</button>
-        <button class="operator" onclick="addToDisplay('+')">+</button>
-        
-        <button onclick="addToDisplay('0')">0</button>
-        <button onclick="addToDisplay('.')">.</button>
-        <button class="equal" onclick="calculate()">=</button>
+    <div class="moon"></div>
+
+    <div class="calculator">
+        <div class="title">Anika Ebnat Sadia</div>
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button class="clear" onclick="handleBtn('clear')">AC</button>
+            <button class="operator" onclick="handleBtn('del')">DEL</button>
+            <button class="operator" onclick="handleBtn('/')">÷</button>
+            
+            <button onclick="handleBtn('7')">7</button>
+            <button onclick="handleBtn('8')">8</button>
+            <button onclick="handleBtn('9')">9</button>
+            <button class="operator" onclick="handleBtn('*')">×</button>
+            
+            <button onclick="handleBtn('4')">4</button>
+            <button onclick="handleBtn('5')">5</button>
+            <button onclick="handleBtn('6')">6</button>
+            <button class="operator" onclick="handleBtn('-')">-</button>
+            
+            <button onclick="handleBtn('1')">1</button>
+            <button onclick="handleBtn('2')">2</button>
+            <button onclick="handleBtn('3')">3</button>
+            <button class="operator" onclick="handleBtn('+')">+</button>
+            
+            <button onclick="handleBtn('0')">0</button>
+            <button onclick="handleBtn('.')">.</button>
+            <button class="equal" onclick="handleBtn('=')">=</button>
+        </div>
     </div>
-</div>
 
 <script>
-    let display = document.getElementById('display');
+    const display = document.getElementById('display');
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
-    function addToDisplay(value) {
-        display.value += value;
+    // শব্দের জন্য ফাংশন
+    function playClickSound() {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine'; // মিষ্টি শব্দের জন্য
+        osc.frequency.setValueAtTime(800, audioCtx.currentTime); // শব্দের পিচ
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.1);
     }
 
-    function clearDisplay() {
-        display.value = '';
+    // বাটন হ্যান্ডলিং
+    function handleBtn(val) {
+        playClickSound(); // শব্দ বাজানো
+        if (val === 'clear') display.value = "";
+        else if (val === 'del') display.value = display.value.slice(0, -1);
+        else if (val === '=') {
+            try { display.value = eval(display.value); } 
+            catch { display.value = "Error"; setTimeout(()=>display.value="", 1500); }
+        }
+        else display.value += val;
     }
 
-    function deleteLast() {
-        display.value = display.value.slice(0, -1);
+    // দিন-রাত পরিবর্তন (প্রতি ৪ সেকেন্ড)
+    setInterval(() => { document.body.classList.toggle('night'); }, 4000);
+
+    // তারা তৈরি
+    for (let i = 0; i < 60; i++) {
+        let star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 3 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + 'vw';
+        star.style.top = Math.random() * 100 + 'vh';
+        document.body.appendChild(star);
     }
 
-    function calculate() {
-        try {
-            display.value = eval(display.value);
-        } catch (error) {
-            display.value = "Error";
-            setTimeout(clearDisplay, 1500);
+    // বরফ পড়া
+    function createSnow() {
+        if(document.body.classList.contains('night')) {
+            let flake = document.createElement('div');
+            flake.className = 'snowflake';
+            flake.innerHTML = '❄';
+            flake.style.left = Math.random() * 100 + 'vw';
+            flake.style.animation = `fall ${Math.random() * 3 + 2}s linear forwards`;
+            document.body.appendChild(flake);
+            setTimeout(() => flake.remove(), 5000);
         }
     }
-</script>
+    setInterval(createSnow, 150);
 
+    // ধূমকেতু
+    setInterval(() => {
+        if(document.body.classList.contains('night')) {
+            let comet = document.createElement('div');
+            comet.className = 'comet';
+            comet.style.right = '-100px';
+            comet.style.top = Math.random() * 200 + 'px';
+            comet.style.animation = "shoot 1.5s linear forwards";
+            document.body.appendChild(comet);
+            setTimeout(() => comet.remove(), 1500);
+        }
+    }, 3000);
+</script>
 </body>
 </html>
+
