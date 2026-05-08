@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anika Ebnat Sadia Calculator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body {
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+        }
+
+        /* ক্যালকুলেটর বডি ডিজাইন */
+        .calculator {
+            width: 320px; padding: 20px; border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.5);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title {
+            text-align: center; color: #fff; font-size: 18px;
+            margin-bottom: 15px; font-weight: 600; text-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+        }
+
+        /* ডিসপ্লে স্ক্রিন */
+        #display {
+            width: 100%; height: 60px; font-size: 30px; text-align: right;
+            margin-bottom: 20px; padding: 10px; border: none; border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3); color: #333; outline: none;
+        }
+
+        /* বাটন গ্রিড */
+        .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+        button {
+            height: 60px; border-radius: 15px; border: none;
+            font-size: 20px; font-weight: bold; cursor: pointer;
+            background: rgba(255, 255, 255, 0.5); color: #444;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px rgba(0,0,0,0.1);
+        }
+
+        /* বাটন এনিমেশন */
+        button:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+            color: #ff6b6b;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px rgba(0,0,0,0.1);
+        }
+
+        .operator { background: rgba(255, 107, 107, 0.6); color: white; }
+        .equal { background: #4ee44e; color: white; grid-column: span 2; }
+        .clear { background: #ff4d4d; color: white; grid-column: span 2; }
+
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="title">Anika Ebnat Sadia</div>
+    <input type="text" id="display" disabled>
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">AC</button>
+        <button class="operator" onclick="deleteLast()">DEL</button>
+        <button class="operator" onclick="addToDisplay('/')">/</button>
+        
+        <button onclick="addToDisplay('7')">7</button>
+        <button onclick="addToDisplay('8')">8</button>
+        <button onclick="addToDisplay('9')">9</button>
+        <button class="operator" onclick="addToDisplay('*')">×</button>
+        
+        <button onclick="addToDisplay('4')">4</button>
+        <button onclick="addToDisplay('5')">5</button>
+        <button onclick="addToDisplay('6')">6</button>
+        <button class="operator" onclick="addToDisplay('-')">-</button>
+        
+        <button onclick="addToDisplay('1')">1</button>
+        <button onclick="addToDisplay('2')">2</button>
+        <button onclick="addToDisplay('3')">3</button>
+        <button class="operator" onclick="addToDisplay('+')">+</button>
+        
+        <button onclick="addToDisplay('0')">0</button>
+        <button onclick="addToDisplay('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+    let display = document.getElementById('display');
+
+    function addToDisplay(value) {
+        display.value += value;
+    }
+
+    function clearDisplay() {
+        display.value = '';
+    }
+
+    function deleteLast() {
+        display.value = display.value.slice(0, -1);
+    }
+
+    function calculate() {
+        try {
+            display.value = eval(display.value);
+        } catch (error) {
+            display.value = "Error";
+            setTimeout(clearDisplay, 1500);
+        }
+    }
+</script>
+
+</body>
+</html>
